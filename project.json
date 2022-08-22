@@ -1,4 +1,7 @@
 {
+	"out_c_file": "./settings.c",
+	"out_h_file": "./settings.h",
+	"in_json_file" : "./project.json",
 	"settings" : [
 		{
 			"name": "ack_en",

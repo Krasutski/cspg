@@ -1,6 +1,7 @@
 #include "settings.h"
 #include "log_.h"
 #include <string.h>
+#include <assert.h>
 
 #define AUTO_SAVE_DATA                  (1)
 #define SETTINGS_SIGNATURE              (0xA55A)
@@ -39,7 +40,7 @@ static uint8_t _checksum (uint8_t const *ptr, size_t sz) {
 
 /* -------------------------------------------------------------------------- */
 
-static void _pending_save(void) {
+static void _save_request(void) {
 
     if (_io->save_request_cb) {
         _io->save_request_cb();
@@ -66,11 +67,6 @@ void settings_init(settings_io_t *io) {
         return;
     }
 
-    if (io->page_size == 0) {
-        LOG_ERROR("Invalid pointer on settings get_page_size interface");
-        return;
-    }
-
     if (io->read == NULL) {
         LOG_ERROR("Invalid pointer on settings read interface");
         return;
@@ -79,6 +75,10 @@ void settings_init(settings_io_t *io) {
     if (io->write == NULL) {
         LOG_ERROR("Invalid pointer on settings write interface");
         return;
+    }
+	
+    if (io->page_size == 0) {
+        io->page_size = sizeof(settings_packet_t);
     }
 
     _io = io;

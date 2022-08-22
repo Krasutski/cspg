@@ -1,5 +1,9 @@
 import json
 
+arg_in_json_file = "project.json"
+arg_out_c_file = "settings.c"
+arg_out_h_file = "settings.h"
+
 #########################################################
 
 GETTER_TEMPLATE = """
@@ -25,13 +29,14 @@ SETTER_PROTOTYPE_TEMPLATE = "void settings_set_{1}({0} {1});\n"
 
 POINTER_GETTER_TEMPLATE = """
 void settings_get_{1}({0} {2}) {{
-    memcpy((uint8_t*){1}, &_storage.settings.{1}, sizeof(_storage.settings.{1}));
+    _LOG_ARRAY(\"Get .{1} = ", &_storage.settings.{1}[0], sizeof(_storage.settings.{1}));
+    memcpy((uint8_t*){1}, &_storage.settings.{1}[0], sizeof(_storage.settings.{1}));
 }}
 """
 POINTER_SETTER_TEMPLATE = """
 void settings_set_{1}(const {0} {2}) {{
 
-    _LOG(\"Set .{1} = %d\", {1});
+    _LOG_ARRAY(\"Set .{1} = ", {1}, sizeof(_storage.settings.{1}));
     memcpy(&_storage.settings.{1}, (uint8_t*){1}, sizeof(_storage.settings.{1}));
 
 #if AUTO_SAVE_DATA == 1
@@ -113,8 +118,15 @@ def make_sub_struct_initialization(substruct):
     substruct_default = substruct_default + "    }"
     return substruct_default
 
-with open("project.json", "r") as read_file:
+with open(arg_in_json_file, "r") as read_file:
     jsettings = json.load(read_file)
+
+arg_in_json_file = jsettings["in_json_file"]
+arg_out_h_file = jsettings["out_h_file"]
+arg_out_c_file = jsettings["out_c_file"]
+print("C file: %s" % arg_out_c_file)
+print("H file: %s" % arg_out_h_file)
+print("JSON file: %s" % arg_in_json_file)
 
 #print(jsettings)
 for item in jsettings["settings"]:
@@ -195,7 +207,7 @@ with open("settings.template.c", "r") as file:
 c_file = c_file.replace( "/*__SETTINGS_C_DEFAUL_SETTINGS__*/", default_list)
 c_file = c_file.replace( "/*__SETTINGS_C_LOG_INFO_PRINTS__*/", print_info_list)
 c_file = c_file.replace( "/*__SETTINGS_C_GETTER_SETTER_FUNCTIONS__*/", function_list)
-with open("./../../Core/Src/settings.c", "w") as file:
+with open(arg_out_c_file, "w") as file:
      file.write(c_file)
 
 #########################################################
@@ -208,5 +220,5 @@ h_file = h_file.replace( "/*__SETTINGS_H_ENUMS__*/", enums)
 h_file = h_file.replace( "/*__SETTINGS_H_STRUCTS__*/", substruct_definition)
 h_file = h_file.replace( "/*__SETTINGS_H_SETTINGS_STRUCT__*/", typedef)
 h_file = h_file.replace( "/*__SETTINGS_H_PROTOTUPES__*/", function_prototype_list)
-with open("./../../Core/Inc/settings.h", "w") as file:
+with open(arg_out_h_file, "w") as file:
     file.write(h_file)
