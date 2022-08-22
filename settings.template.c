@@ -23,7 +23,7 @@ typedef struct {
 #define SETTINGS_CHECKSUM_BLOCK_SIZE    ((size_t)&((settings_packet_t*)NULL)->checksum)
 
 static settings_packet_t _storage;
-static settings_io_t *_io = NULL;
+static const settings_io_t *_io = NULL;
 
 static_assert((sizeof(settings_packet_t) % 8) == 0);
 /* -------------------------------------------------------------------------- */
@@ -55,7 +55,7 @@ void settings_print(void) {
 
 /* -------------------------------------------------------------------------- */
 
-void settings_init(settings_io_t *io) {
+void settings_init(const settings_io_t *io) {
 
     if (io == NULL) {
         LOG_ERROR("Invalid pointer on settings interface");
@@ -67,6 +67,11 @@ void settings_init(settings_io_t *io) {
         return;
     }
 
+    if (io->page_size == 0) {
+        LOG_ERROR("Invalid page_size");
+        return;
+    }
+
     if (io->read == NULL) {
         LOG_ERROR("Invalid pointer on settings read interface");
         return;
@@ -75,10 +80,6 @@ void settings_init(settings_io_t *io) {
     if (io->write == NULL) {
         LOG_ERROR("Invalid pointer on settings write interface");
         return;
-    }
-	
-    if (io->page_size == 0) {
-        io->page_size = sizeof(settings_packet_t);
     }
 
     _io = io;

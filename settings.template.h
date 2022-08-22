@@ -28,7 +28,7 @@ typedef struct {
 
 /* -------------------------------------------------------------------------- */
 
-void settings_init(settings_io_t *io);
+void settings_init(const settings_io_t *io);
 void settings_reload(void);
 void settings_save(void);
 void settings_print(void);
