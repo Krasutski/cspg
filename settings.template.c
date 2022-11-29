@@ -1,5 +1,5 @@
 #include "settings.h"
-#include "log_.h"
+#include "log_/log_.h"
 #include <string.h>
 #include <assert.h>
 
@@ -9,7 +9,7 @@
 #define _LOG(...)                       LOG(LOG_MASK_DEBUG, LOG_COLOR(LOG_COLOR_PURPLE)LOG_PREFIX __VA_ARGS__)
 #define _LOG_ARRAY(...)                 LOG_DEBUG_ARRAY(LOG_PREFIX __VA_ARGS__)
 
-/*__SETTINGS_C_DEFAUL_SETTINGS__*/
+/*__SETTINGS_C_DEFAULT_SETTINGS__*/
 
 #define UNALIGNED_BYTES                 ( (sizeof(settings_t) + 4) % 8 )
 typedef struct {

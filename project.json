@@ -1,418 +1,121 @@
 {
-	"out_c_file": "./settings.c",
-	"out_h_file": "./settings.h",
-	"in_json_file" : "./project.json",
-	"settings" : [
-		{
-			"name": "ack_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "error_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "echo_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "enc_ntf_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "mouse_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "accel_ntf_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "mag_ntf_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "gyro_ntf_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "pwr_ntf_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "light_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "laser_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "visor_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "power_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "otg_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "filter_en",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "mouse_up_down_inverted",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "mouse_left_right_inverted",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "mag_calibrated",
-			"type": "bool",
-			"default": 0
-		},
-		{
-			"name": "enc_btn_debounce_ms",
-			"type": "uint16_t",
-			"default": 50
-		},
-		{
-			"name": "enc_roll_debounce",
-			"type": "uint8_t",
-			"default": 2
-		},
-		{
-			"name": "enc_freq_hz",
-			"type": "uint8_t",
-			"default": 0
-		},
-		{
-			"name": "enc_short_click_min_ms",
-			"type": "uint16_t",
-			"default": 50
-		},
-		{
-			"name": "enc_short_click_max_ms",
-			"type": "uint16_t",
-			"default": 200
-		},
-		{
-			"name": "enc_long_time_light",
-			"type": "uint8_t",
-			"default": 3
-		},
-		{
-			"name": "enc_long_time_power_off",
-			"type": "uint8_t",
-			"default": 5
-		},
-		{
-			"name": "accel_interval_ms",
-			"type": "uint32_t",
-			"default": 1000
-		},
-		{
-			"name": "accel_units",
-			"type": "uint8_t",
-			"default": 1
-		},
-		{
-			"name": "accel_mode",
-			"type": "enum",
-			"enum": ["ODR_100", "ODR_50", "ODR_10", "ODR_LPM", "ODR_PDM"],
-			"default": 0
-		},
-		{
-			"name": "slack_s",
-			"type": "uint8_t",
-			"enum": ["NORMAL", "SLEEP", "PDM"],
-			"default": 30
-		},
-		{
-			"name": "mouse_up_down_axis",
-			"type": "enum",
-			"enum": ["UP_DOWN_AXIS_X", "UP_DOWN_AXIS_Y", "UP_DOWN_AXIS_Z"],
-			"default": 1
-		},
-		{
-			"name": "mouse_left_right_axis",
-			"type": "enum",
-			"enum": ["LEFT_RIGHT_AXIS_X", "LEFT_RIGHT_AXIS_Y", "LEFT_RIGHT_AXIS_Z"],			
-			"default": 0
-		},
-		{
-			"name": "mouse_up_down_step",
-			"type": "uint8_t",
-			"default": 2
-		},
-		{
-			"name": "mouse_left_right_step",
-			"type": "uint8_t",
-			"default": 2
-		},
-		{
-			"name": "mouse_up_down_threshold",
-			"type": "uint32_t",
-			"default": 2
-		},
-		{
-			"name": "mouse_left_right_threshold",
-			"type": "uint32_t",
-			"default": 2
-		},
-		{
-			"name": "mouse_zero_pos",
-			"type": "float",			
-			"array_size" : 3,
-			"default": [0, 0, 0]
-		},
-		{
-			"name": "gyro_mode",
-			"type": "enum",
-			"enum": ["NORMAL", "SLEEP", "PDM"],
-			"default": 0
-		},
-		{
-			"name": "gyro_interval_ms",
-			"type": "uint32_t",
-			"default": 1000
-		},
-		{
-			"name": "mag_mode",
-			"type": "enum",
-			"enum": ["UHR", "LPM", "PDM"],
-			"default": 0
-		},
-		{
-			"name": "mag_interval_ms",
-			"type": "uint32_t",
-			"default": 1000
-		},
-		{
-			"name": "ff_threshold_cm",
-			"type": "uint8_t",
-			"default": 50
-		},
-		{
-			"name": "mag_offset",
-			"type": "int32_t",
-			"array_size" : 3,
-			"default": [0,0,0]
-		},
-		{
-			"name": "pwr_mode",
-			"type": "uint8_t",
-			"default": 0
-		},
-		{
-			"name": "pwr_interval_s",
-			"type": "uint16_t",
-			"default": 300
-		},
-		{
-			"name": "pwr_threshold",
-			"type": "uint8_t",
-			"default": 5
-		},
-		{
-			"name": "audio_volume",
-			"type": "uint8_t",
-			"default": 70
-		},
-		{
-			"name": "audio_volume_hf_max",
-			"type": "uint8_t",
-			"default": 100
-		},
-		{
-			"name": "audio_volume_spkr_max",
-			"type": "uint8_t",
-			"default": 100
-		},
-		{
-			"name": "gain",
-			"type": "uint16_t",
-			"default": 0
-		},
-		{
-			"name": "fmode",
-			"type": "uint8_t",
-			"default": 3
-		},
-		{
-			"name": "lora_dev_eui",
-			"type": "uint8_t",
-			"default": [0],
-			"array_size": 8
-		},
-		{
-			"name": "lora_app_eui",
-			"type": "uint8_t",
-			"default": [0],
-			"array_size": 8
-		},
-		{
-			"name": "lora_app_key",
-			"type": "uint8_t",
-			"default": [0],
-			"array_size": 16
-		},
-		{
-			"name": "lora_nwks_key",
-			"type": "uint8_t",
-			"default": [0],
-			"array_size": 16
-		},
-		{
-			"name": "lora_app_session_key",
-			"type": "uint8_t",
-			"default": [0],
-			"array_size": 16
-		},
-		{
-			"name": "lora_dev_addr",
-			"type": "uint32_t",
-			"default": 0
-		},
-		{
-			"name": "lora_dev_power",
-			"type": "int8_t",
-			"default": 0
-		},
-		{
-			"name": "lora_datarate",
-			"type": "uint8_t",
-			"default": 0
-		},
-		{
-			"name": "lora_auto_join_count",
-			"type": "uint8_t",
-			"default": 0
-		},
-		{
-			"name": "lora_auto_join_type",
-			"type": "uint8_t",
-			"default": 0
-		},
-		{
-			"name": "lora_class",
-			"type": "uint8_t",
-			"default": 2
-		},
-		{
-			"name": "lora_adr",
-			"type": "uint8_t",
-			"default": 0
-		},
-		{
-			"name": "lora_join_ch_mask",
-			"type": "uint8_t",
-			"default": 7
-		},
-		{
-			"name": "lora_max_eirp",
-			"type": "uint8_t",
-			"default": 24
-		},
-		{
-			"name": "lora_tx_cycle_mode",
-			"type": "uint8_t",
-			"default": 0
-		},
-		{
-			"name": "lora_tx_cfg",
-			"type": "sub_struct",
-			"default": 0,
-			"sub_struct_name": "lora_raw_cfg_config_t",
-			"type_definition" : [
-				{
-					"name": "freq",
-					"type": "uint32_t",
-					"default": 868100000
-				},
-				{
-					"name": "power",
-					"type": "int8_t",
-					"default": 0
-				},
-				{
-					"name": "sf",
-					"type": "uint8_t",
-					"default": 12
-				},
-				{
-					"name": "bw",
-					"type": "uint32_t",
-					"default": 125
-				},
-				{
-					"name": "datarate",
-					"type": "uint8_t",
-					"default": 0
-				},
-				{
-					"name": "cr",
-					"type": "uint8_t",
-					"default": 0
-				},
-				{
-					"name": "prlen",
-					"type": "uint16_t",
-					"default": 8
-				},
-				{
-					"name": "fdev",
-					"type": "uint32_t",
-					"default": 0
-				},
-				{
-					"name": "is_crc_on",
-					"type": "uint32_t",
-					"default": 1
-				},
-				{
-					"name": "is_iqi_inv",
-					"type": "uint32_t",
-					"default": 0
-				},
-				{
-					"name": "syncword",
-					"type": "uint8_t",
-					"default": 52
-				},
-				{
-					"name": "is_cad_on",
-					"type": "uint8_t",
-					"default": 0
-				},
-				{
-					"name": "is_fsk_on",
-					"type": "uint8_t",
-					"default": 0
-				}
-			]
-		}
-	]  
+    "out_c_file": "./../../src/settings/settings.c",
+    "out_h_file": "./../../src/settings/settings.h",
+    "in_json_file": "./project.json",
+    "settings": [
+        {
+            "name": "cycling_enable",
+            "type": "bool",
+            "default": false
+        },
+        {
+            "name": "sample_rate_hz",
+            "type": "uint16_t",
+            "default": 16000
+        },
+        {
+            "name": "bit_wide",
+            "type": "uint8_t",
+            "default": 16
+        },
+        {
+            "name": "rec_sensitivity",
+            "type": "uint8_t",
+            "default": 100
+        },
+        {
+            "name": "enable_autogain",
+            "type": "bool",
+            "default": false
+        },
+        {
+            "name": "file_limit_max_mb",
+            "type": "uint16_t",
+            "default": 1000
+        },
+        {
+            "name": "file_limit_min_mb",
+            "type": "uint16_t",
+            "default": 1
+        },
+        {
+            "name": "file_limit_enabled",
+            "type": "bool",
+            "default": false
+        },
+        {
+            "name": "vas_period_s",
+            "type": "uint16_t",
+            "default": 30
+        },
+        {
+            "name": "vas_timeout_s",
+            "type": "uint16_t",
+            "default": 10
+        },
+        {
+            "name": "vas_sensitivity",
+            "type": "uint8_t",
+            "default": 50
+        },
+        {
+            "name": "vas_enabled",
+            "type": "bool",
+            "default": false
+        },
+        {
+            "name": "serial",
+            "type": "char",
+            "only_read": true,
+            "array_size": 16,
+            "default": [
+                0
+            ]
+        },
+        {
+            "name": "timers",
+            "type": "sub_struct",
+            "default": 0,
+            "array_size": 4,
+            "get_set_by_item": true,
+            "sub_struct_name": "timer_param_t",
+            "type_definition": [
+                {
+                    "name": "year",
+                    "type": "uint16_t",
+                    "default": 2022
+                },
+                {
+                    "name": "duration",
+                    "type": "uint16_t",
+                    "default": 1
+                },
+                {
+                    "name": "day",
+                    "type": "uint8_t",
+                    "default": 1
+                },
+                {
+                    "name": "month",
+                    "type": "uint8_t",
+                    "default": 1
+                },
+                {
+                    "name": "hour",
+                    "type": "uint8_t",
+                    "default": 1
+                },
+                {
+                    "name": "min",
+                    "type": "uint8_t",
+                    "default": 1
+                },
+                {
+                    "name": "enabled",
+                    "type": "bool",
+                    "default": false
+                }
+            ]
+        }
+    ]
 }

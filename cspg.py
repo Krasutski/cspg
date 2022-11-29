@@ -49,6 +49,27 @@ POINTER_SETTER_PROTOTYPE_TEMPLATE = "void settings_set_{1}(const {0} {2});\n"
 
 #########################################################
 
+POINTER_ITEM_GETTER_TEMPLATE = """
+void settings_get_{1}({0} *{1}, size_t index) {{
+    _LOG_ARRAY(\"Get .{1} = ", &_storage.settings.{1}[index], sizeof(_storage.settings.{1}[0]));
+    memcpy((uint8_t*){1}, &_storage.settings.{1}[index], sizeof(_storage.settings.{1}[0]));
+}}
+"""
+POINTER_ITEM_SETTER_TEMPLATE = """
+void settings_set_{1}(const {0} *{1}, size_t index) {{
+
+    _LOG_ARRAY(\"Set .{1} = ", {1}, sizeof(_storage.settings.{1}[0]));
+    memcpy(&_storage.settings.{1}[index], (uint8_t*){1}, sizeof(_storage.settings.{1}[0]));
+
+#if AUTO_SAVE_DATA == 1
+    _save_request();
+#endif
+}}
+"""
+POINTER_ITEM_SETTER_PROTOTYPE_TEMPLATE = "void settings_set_{1}(const {0} *{1}, size_t index);\n"
+POINTER_ITEM_GETTER_PROTOTYPE_TEMPLATE = "void settings_get_{1}({0} *{1}, size_t index);\n"
+#########################################################
+
 BOOL_GETTER_TEMPLATE = """
 {0} settings_is_{1}(void) {{
     return _storage.settings.{1};
@@ -114,7 +135,7 @@ def make_sub_struct_initialization(substruct):
         type = item["type"]
         name = item["name"]
         default_value = item["default"]
-        substruct_default = substruct_default + "    " + DEFAULT_VALUES_TEMPLATE.format(name, default_value)
+        substruct_default = substruct_default + "    " + DEFAULT_VALUES_TEMPLATE.format(name, str(default_value).lower())
     substruct_default = substruct_default + "    }"
     return substruct_default
 
@@ -133,19 +154,48 @@ for item in jsettings["settings"]:
     type = item["type"]
     name = item["name"]
     default_value = item["default"]
+    if default_value == True or default_value == False:
+        default_value = str(default_value).lower()
     #print("Item " + str(item))
     if "array_size" in item:
         define_name_size = "SETTINGS_{}_SIZE".format(name.upper())
         defines = defines + "#define {} ({})\n".format(define_name_size, item["array_size"])
         array_name =  name + "[{0}]".format(define_name_size)
+        if type == "sub_struct":
+            substruct_definition = substruct_definition + make_sub_struct_typedef(item["sub_struct_name"], item["type_definition"])
+            substruct_definition += SEPARATOR + '\r\n'
+            
+            struct_name = item["sub_struct_name"]
+            init_val = make_sub_struct_initialization(item["type_definition"])
+            for i in range(0,item["array_size"]):
+                default_list = default_list + DEFAULT_VALUES_TEMPLATE.format(name+'['+str(i)+']', init_val)
 
-        typedef = typedef + TYPEDEF_TEMPLATE.format(type, array_name)
-        array_default_value = str("{" + "".join("0x{:02x}, ".format(x) for x in default_value) + "}").replace(", }", "}")
-        default_list = default_list + DEFAULT_VALUES_TEMPLATE.format(name, array_default_value)
-        function_list = function_list + POINTER_GETTER_TEMPLATE.format(type, name, array_name) + SEPARATOR
-        function_list = function_list + POINTER_SETTER_TEMPLATE.format(type, name, array_name) + SEPARATOR
-        function_prototype_list = function_prototype_list + POINTER_SETTER_PROTOTYPE_TEMPLATE.format(type, name, array_name)
-        function_prototype_list = function_prototype_list + POINTER_GETTER_PROTOTYPE_TEMPLATE.format(type, name, array_name)
+            typedef = typedef + TYPEDEF_TEMPLATE.format(struct_name, array_name)
+            if  "get_set_by_item" in item and item["get_set_by_item"] == True:
+                function_list = function_list + POINTER_ITEM_GETTER_TEMPLATE.format(struct_name, name, array_name) + SEPARATOR
+                function_list = function_list + POINTER_ITEM_SETTER_TEMPLATE.format(struct_name, name, array_name) + SEPARATOR                
+                if  "only_read" not in item or item["only_read"] == False:
+                    function_prototype_list = function_prototype_list + POINTER_ITEM_SETTER_PROTOTYPE_TEMPLATE.format(struct_name, name, array_name)
+                function_prototype_list = function_prototype_list + POINTER_ITEM_GETTER_PROTOTYPE_TEMPLATE.format(struct_name, name, array_name)
+            else:
+                function_list = function_list + POINTER_GETTER_TEMPLATE.format(struct_name, name, array_name) + SEPARATOR
+                function_list = function_list + POINTER_SETTER_TEMPLATE.format(struct_name, name, array_name) + SEPARATOR
+                
+                if  "only_read" not in item or item["only_read"] == False:
+                    function_prototype_list = function_prototype_list + POINTER_SETTER_PROTOTYPE_TEMPLATE.format(struct_name, name, array_name)
+                function_prototype_list = function_prototype_list + POINTER_GETTER_PROTOTYPE_TEMPLATE.format(struct_name, name, array_name)
+
+        else :
+            typedef = typedef + TYPEDEF_TEMPLATE.format(type, array_name)
+            array_default_value = str("{" + "".join("0x{:02x}, ".format(x) for x in default_value) + "}").replace(", }", "}")
+            default_list = default_list + DEFAULT_VALUES_TEMPLATE.format(name, array_default_value)
+            function_list = function_list + POINTER_GETTER_TEMPLATE.format(type, name, array_name) + SEPARATOR
+            if  "only_read" not in item or item["only_read"] == False:
+                function_list = function_list + POINTER_SETTER_TEMPLATE.format(type, name, array_name) + SEPARATOR
+            
+            if  "only_read" not in item or item["only_read"] == False:
+                function_prototype_list = function_prototype_list + POINTER_SETTER_PROTOTYPE_TEMPLATE.format(type, name, array_name)
+            function_prototype_list = function_prototype_list + POINTER_GETTER_PROTOTYPE_TEMPLATE.format(type, name, array_name)
     elif type == "bool":
         typedef = typedef + TYPEDEF_TEMPLATE.format(type, name)
         default_list = default_list + DEFAULT_VALUES_TEMPLATE.format(name, default_value)
@@ -155,6 +205,7 @@ for item in jsettings["settings"]:
         function_prototype_list = function_prototype_list + BOOL_GETTER_PROTOTYPE_TEMPLATE.format(type, name)
     elif type == "sub_struct":
         substruct_definition = substruct_definition + make_sub_struct_typedef(item["sub_struct_name"], item["type_definition"])
+        substruct_definition += SEPARATOR + '\r\n'
         init_val = make_sub_struct_initialization(item["type_definition"])
         default_list = default_list + DEFAULT_VALUES_TEMPLATE.format(name, init_val)
 
@@ -204,7 +255,7 @@ typedef = typedef + "} __packed settings_t;\n"
 c_file = ""
 with open("settings.template.c", "r") as file:
     c_file = file.read()
-c_file = c_file.replace( "/*__SETTINGS_C_DEFAUL_SETTINGS__*/", default_list)
+c_file = c_file.replace( "/*__SETTINGS_C_DEFAULT_SETTINGS__*/", default_list)
 c_file = c_file.replace( "/*__SETTINGS_C_LOG_INFO_PRINTS__*/", print_info_list)
 c_file = c_file.replace( "/*__SETTINGS_C_GETTER_SETTER_FUNCTIONS__*/", function_list)
 with open(arg_out_c_file, "w") as file:
@@ -219,6 +270,6 @@ h_file = h_file.replace( "/*__SETTINGS_H_HEADERS__*/", defines)
 h_file = h_file.replace( "/*__SETTINGS_H_ENUMS__*/", enums)
 h_file = h_file.replace( "/*__SETTINGS_H_STRUCTS__*/", substruct_definition)
 h_file = h_file.replace( "/*__SETTINGS_H_SETTINGS_STRUCT__*/", typedef)
-h_file = h_file.replace( "/*__SETTINGS_H_PROTOTUPES__*/", function_prototype_list)
+h_file = h_file.replace( "/*__SETTINGS_H_PROTOTYPES__*/", function_prototype_list)
 with open(arg_out_h_file, "w") as file:
     file.write(h_file)
